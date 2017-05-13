@@ -1,0 +1,12 @@
+me/mryawe/job1/xmlhakker/WikiLinksReducer.class
+me/mryawe/job2/calculate/PageRankJob.class
+me/mryawe/job2/calculate/PageRankCounter.class
+me/mryawe/job2/calculate/PageRankMapper.class
+me/mryawe/WikiPageRanking.class
+me/mryawe/job1/xmlhakker/XmlInputFormat$XmlRecordReader.class
+me/mryawe/job2/calculate/RankCalculateMapper.class
+me/mryawe/job2/calculate/RankCalculateReduce.class
+me/mryawe/job1/xmlhakker/WikiPageLinksMapper.class
+me/mryawe/job1/xmlhakker/XmlInputFormat.class
+me/mryawe/job3/result/RankingMapper.class
+me/mryawe/job2/calculate/PageRankReducer.class
