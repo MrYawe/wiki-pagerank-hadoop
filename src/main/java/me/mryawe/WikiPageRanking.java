@@ -3,9 +3,6 @@ package me.mryawe;
 import me.mryawe.job1.sqlparser.LinksMapper;
 import me.mryawe.job1.sqlparser.LinksReducer;
 import me.mryawe.job1.sqlparser.PageMapper;
-import me.mryawe.job1.xmlhakker.WikiLinksReducer;
-import me.mryawe.job1.xmlhakker.WikiPageLinksMapper;
-import me.mryawe.job1.xmlhakker.XmlInputFormat;
 import me.mryawe.job2.calculate.RankCalculateMapper;
 import me.mryawe.job2.calculate.RankCalculateReduce;
 import me.mryawe.job3.result.RankingMapper;
@@ -15,7 +12,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.lib.IdentityReducer;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
@@ -66,32 +62,6 @@ public class WikiPageRanking extends Configured implements Tool {
         if (!isCompleted) return 1;
         return 0;
         */
-    }
-
-
-    public boolean runXmlParsing(String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
-        Configuration conf = new Configuration();
-        conf.set(XmlInputFormat.START_TAG_KEY, "<page>");
-        conf.set(XmlInputFormat.END_TAG_KEY, "</page>");
-
-        Job xmlHakker = Job.getInstance(conf, "xmlHakker");
-        xmlHakker.setJarByClass(WikiPageRanking.class);
-
-        // Input / Mapper
-        FileInputFormat.addInputPath(xmlHakker, new Path(inputPath));
-        xmlHakker.setInputFormatClass(XmlInputFormat.class);
-        xmlHakker.setMapperClass(WikiPageLinksMapper.class);
-        xmlHakker.setMapOutputKeyClass(Text.class);
-
-        // Output / Reducer
-        FileOutputFormat.setOutputPath(xmlHakker, new Path(outputPath));
-        xmlHakker.setOutputFormatClass(TextOutputFormat.class);
-
-        xmlHakker.setOutputKeyClass(Text.class);
-        xmlHakker.setOutputValueClass(Text.class);
-        xmlHakker.setReducerClass(WikiLinksReducer.class);
-
-        return xmlHakker.waitForCompletion(true);
     }
 
     public boolean runSqlPageLinksParsing(String pageSqlInputPath, String linksSqlInputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
