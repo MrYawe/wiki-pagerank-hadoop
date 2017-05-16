@@ -2,8 +2,9 @@
 # Created by https://www.gitignore.io/api/intellij+iml
 
 ### Custom ###
-input
 ranking
+input_links
+input_pages
 final_result
 
 

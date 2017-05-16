@@ -1,5 +1,8 @@
 package me.mryawe;
 
+import me.mryawe.job1.sqlparser.LinksMapper;
+import me.mryawe.job1.sqlparser.LinksReducer;
+import me.mryawe.job1.sqlparser.PageMapper;
 import me.mryawe.job1.xmlhakker.WikiLinksReducer;
 import me.mryawe.job1.xmlhakker.WikiPageLinksMapper;
 import me.mryawe.job1.xmlhakker.XmlInputFormat;
@@ -10,9 +13,12 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.lib.IdentityReducer;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
@@ -33,7 +39,15 @@ public class WikiPageRanking extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
-        boolean isCompleted = runXmlParsing("input", "ranking/iter00");
+        // boolean isCompleted = runXmlParsing("input", "ranking/iter00");
+        // boolean isCompleted = runSqlPageLinksParsingTest("input_links", "output_links");
+        boolean isCompleted = runSqlPageLinksParsing("input_pages", "input_links", "ranking/iter00");
+        if(isCompleted) {
+            return 0;
+        } else {
+            return 1;
+        }
+        /*
         if (!isCompleted) return 1;
 
         String lastResultPath = null;
@@ -51,6 +65,7 @@ public class WikiPageRanking extends Configured implements Tool {
 
         if (!isCompleted) return 1;
         return 0;
+        */
     }
 
 
@@ -77,6 +92,43 @@ public class WikiPageRanking extends Configured implements Tool {
         xmlHakker.setReducerClass(WikiLinksReducer.class);
 
         return xmlHakker.waitForCompletion(true);
+    }
+
+    public boolean runSqlPageLinksParsing(String pageSqlInputPath, String linksSqlInputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration();
+
+        Job sqlParser = Job.getInstance(conf, "sqlParserLinks");
+        sqlParser.setJarByClass(WikiPageRanking.class);
+
+        sqlParser.setOutputKeyClass(LongWritable.class);
+        sqlParser.setOutputValueClass(Text.class);
+
+        MultipleInputs.addInputPath(sqlParser, new Path(pageSqlInputPath),TextInputFormat.class, PageMapper.class);
+        MultipleInputs.addInputPath(sqlParser, new Path(linksSqlInputPath),TextInputFormat.class, LinksMapper.class);
+        FileOutputFormat.setOutputPath(sqlParser, new Path(outputPath));
+        sqlParser.setReducerClass(LinksReducer.class);
+
+
+        return sqlParser.waitForCompletion(true);
+    }
+
+    public boolean runSqlPageLinksParsingTest(String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration();
+
+        Job sqlParser = Job.getInstance(conf, "sqlParserLinks");
+        sqlParser.setJarByClass(WikiPageRanking.class);
+
+        sqlParser.setOutputKeyClass(LongWritable.class);
+        sqlParser.setOutputValueClass(Text.class);
+
+        FileInputFormat.setInputPaths(sqlParser, new Path(inputPath));
+        FileOutputFormat.setOutputPath(sqlParser, new Path(outputPath));
+        sqlParser.setMapperClass(LinksMapper.class);
+        sqlParser.setNumReduceTasks(0);
+        //sqlParser.setReducerClass(LinksReducer.class);
+
+
+        return sqlParser.waitForCompletion(true);
     }
 
     private boolean runRankCalculation(String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
