@@ -1,7 +1,7 @@
 me/mryawe/job2/calculate/PageRankJob.class
 me/mryawe/job2/calculate/PageRankCounter.class
-me/mryawe/job2/calculate/RankCalculateReduce.class
 me/mryawe/job2/calculate/PageRankMapper.class
+me/mryawe/job2/calculate/RankCalculateReduce.class
 me/mryawe/job1/sqlparser/PageMapper.class
 me/mryawe/WikiPageRanking.class
 me/mryawe/job1/sqlparser/LinksMapper.class
