@@ -41,7 +41,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>me.mryawe.WordCount</mainClass>
+              <mainClass>me.mryawe.WikiPageRanking</mainClass>
             </manifest>
           </archive>
         </configuration>

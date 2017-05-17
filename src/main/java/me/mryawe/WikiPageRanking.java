@@ -35,15 +35,10 @@ public class WikiPageRanking extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
-        // boolean isCompleted = runXmlParsing("input", "ranking/iter00");
-        // boolean isCompleted = runSqlPageLinksParsingTest("input_links", "output_links");
-        boolean isCompleted = runSqlPageLinksParsing("input_pages", "input_links", "ranking/iter00");
-        if(isCompleted) {
-            return 0;
-        } else {
-            return 1;
-        }
-        /*
+        //boolean isCompleted = runSqlPageLinksParsingTest("input_links", "output_links");
+        //if (!isCompleted) return 1;
+
+        boolean isCompleted = runSqlPageLinksParsing(args[0], args[1], "ranking/iter00");
         if (!isCompleted) return 1;
 
         String lastResultPath = null;
@@ -57,11 +52,10 @@ public class WikiPageRanking extends Configured implements Tool {
             if (!isCompleted) return 1;
         }
 
-        isCompleted = runRankOrdering(lastResultPath, "final_result");
+        isCompleted = runRankOrdering(lastResultPath, args[2]);
 
         if (!isCompleted) return 1;
         return 0;
-        */
     }
 
     public boolean runSqlPageLinksParsing(String pageSqlInputPath, String linksSqlInputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
