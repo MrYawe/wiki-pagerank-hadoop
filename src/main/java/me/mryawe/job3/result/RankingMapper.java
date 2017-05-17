@@ -35,7 +35,7 @@ public class RankingMapper extends Mapper<LongWritable, Text, FloatWritable, Tex
             end = tabRankIndex - (tabPageIndex + 1);
         }
         
-        pageAndRank[0] = Text.decode(value.getBytes(), 0, tabPageIndex);
+        pageAndRank[0] = Text.decode(value.getBytes(), 0, tabPageIndex).replace('_',' ').replaceAll("\'","");
         pageAndRank[1] = Text.decode(value.getBytes(), tabPageIndex + 1, end);
         
         return pageAndRank;
