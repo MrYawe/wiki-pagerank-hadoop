@@ -25,7 +25,7 @@ public class PageMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
             Long pageId = Long.parseLong(matcher.group(1));
             String pageName = matcher.group(2);
 
-            context.write(new LongWritable(pageId), new Text(":pagename:"+pageName));
+            context.write(new LongWritable(pageId), new Text(":pn:"+pageName));
         }
     }
 }
