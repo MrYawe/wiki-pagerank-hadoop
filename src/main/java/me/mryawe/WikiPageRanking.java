@@ -47,6 +47,7 @@ public class WikiPageRanking extends Configured implements Tool {
 
         String lastResultPath = null;
 
+        /*
         for (int runs = 0; runs < 5; runs++) {
             String inPath = "ranking/iter" + nf.format(runs);
             lastResultPath = "ranking/iter" + nf.format(runs + 1);
@@ -55,8 +56,11 @@ public class WikiPageRanking extends Configured implements Tool {
 
             if (!isCompleted) return 1;
         }
+        */
 
-        isCompleted = runRankOrdering(lastResultPath, args[2]);
+        isCompleted = runPageRank("ranking/iter00", "output_rank_calculation");
+
+        isCompleted = runRankOrdering("output_rank_calculation", args[2]);
 
         if (!isCompleted) return 1;
         return 0;
@@ -99,6 +103,7 @@ public class WikiPageRanking extends Configured implements Tool {
         return sqlParser.waitForCompletion(true);
     }
 
+    /*
     private boolean runRankCalculation(String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration conf = new Configuration();
 
@@ -116,6 +121,7 @@ public class WikiPageRanking extends Configured implements Tool {
 
         return rankCalculator.waitForCompletion(true);
     }
+    */
 
     private boolean runRankOrdering(String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration conf = new Configuration();
@@ -136,20 +142,22 @@ public class WikiPageRanking extends Configured implements Tool {
 
         return rankOrdering.waitForCompletion(true);
     }
-    private void runPageRank(String inputPath, String outputPath) throws IOException, InterruptedException, ClassNotFoundException {
-	long i = 0;
-	Path input = new Path(inputPath);
-	String root = input.getParent().toString().concat("/");
-	Path output = new Path(root.concat(String.valueOf(i)));
-	if (PageRankJob.run(input, output, false)) {
-	    do {
-		input = new Path(root.concat(String.valueOf(i)));
-		output = new Path(root.concat(String.valueOf(i + 1)));
-		i++;
-	    } while (PageRankJob.run(input, output, true));
-	}
-	input = new Path(root.concat(String.valueOf(i)));
-	output = new Path(outputPath);
-	PageRankJob.run(input, output, true);
+    private boolean runPageRank(String inputPath, String outputPath) throws IOException, InterruptedException, ClassNotFoundException {
+        long i = 0;
+        Path input = new Path(inputPath);
+        String root = input.getParent().toString().concat("/");
+        Path output = new Path(root.concat(String.valueOf(i)));
+        if (PageRankJob.run(input, output, false)) {
+            do {
+                input = new Path(root.concat(String.valueOf(i)));
+                output = new Path(root.concat(String.valueOf(i + 1)));
+                i++;
+            } while (PageRankJob.run(input, output, true));
+        }
+        input = new Path(root.concat(String.valueOf(i)));
+        output = new Path(outputPath);
+        PageRankJob.run(input, output, true);
+
+        return true;
     }
 }
