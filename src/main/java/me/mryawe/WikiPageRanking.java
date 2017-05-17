@@ -25,6 +25,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -42,12 +43,20 @@ public class WikiPageRanking extends Configured implements Tool {
         //boolean isCompleted = runSqlPageLinksParsingTest("input_links", "output_links");
         //if (!isCompleted) return 1;
 
-        boolean isCompleted = runSqlPageLinksParsing(args[0], args[1], "ranking/iter00");
-        if (!isCompleted) return 1;
+        boolean isCompleted;
+        File file;
+        String job1Output = "temp_output/sql_parsing";
+        String job2Output = "temp_output/pagerank_calculation";
+        String job3Output = args[2];
 
-        String lastResultPath = null;
+        file = new File(job1Output);
+        if (!file.exists()) {
+            isCompleted = runSqlPageLinksParsing(args[0], args[1], job1Output);
+            if (!isCompleted) return 1;
+        }
 
         /*
+        String lastResultPath = null;
         for (int runs = 0; runs < 5; runs++) {
             String inPath = "ranking/iter" + nf.format(runs);
             lastResultPath = "ranking/iter" + nf.format(runs + 1);
@@ -58,11 +67,18 @@ public class WikiPageRanking extends Configured implements Tool {
         }
         */
 
-        isCompleted = runPageRank("ranking/iter00", "output_rank_calculation");
+        file = new File(job2Output);
+        if (!file.exists()) {
+            isCompleted = runPageRank(job1Output, job2Output);
+            if (!isCompleted) return 1;
+        }
 
-        isCompleted = runRankOrdering("output_rank_calculation", args[2]);
+        file = new File(job3Output);
+        if (!file.exists()) {
+            isCompleted = runRankOrdering(job2Output, job3Output);
+            if (!isCompleted) return 1;
+        }
 
-        if (!isCompleted) return 1;
         return 0;
     }
 
