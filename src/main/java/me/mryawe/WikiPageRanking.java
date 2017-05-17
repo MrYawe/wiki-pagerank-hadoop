@@ -5,6 +5,10 @@ import me.mryawe.job1.sqlparser.LinksReducer;
 import me.mryawe.job1.sqlparser.PageMapper;
 import me.mryawe.job2.calculate.RankCalculateMapper;
 import me.mryawe.job2.calculate.RankCalculateReduce;
+import me.mryawe.job2.calculate.PageRankJob;
+import me.mryawe.job2.calculate.PageRankCounter;
+import me.mryawe.job2.calculate.PageRankMapper;
+import me.mryawe.job2.calculate.PageRankReducer;
 import me.mryawe.job3.result.RankingMapper;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -132,5 +136,20 @@ public class WikiPageRanking extends Configured implements Tool {
 
         return rankOrdering.waitForCompletion(true);
     }
-
+    private void runPageRank(String inputPath, String outputPath) throws IOException, InterruptedException, ClassNotFoundException {
+	long i = 0;
+	Path input = new Path(inputPath);
+	String root = input.getParent().toString().concat("/");
+	Path output = new Path(root.concat(String.valueOf(i)));
+	if (PageRankJob.run(input, output, false)) {
+	    do {
+		input = new Path(root.concat(String.valueOf(i)));
+		output = new Path(root.concat(String.valueOf(i + 1)));
+		i++;
+	    } while (PageRankJob.run(input, output, true));
+	}
+	input = new Path(root.concat(String.valueOf(i)));
+	output = new Path(outputPath);
+	PageRankJob.run(input, output, true);
+    }
 }

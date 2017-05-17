@@ -15,3 +15,6 @@ The relevant SQL files are:
 - `frwiki-latest-pagelinks.sql.gz`
 
 They are provided by Wikipedia [here](https://dumps.wikimedia.org/frwiki/latest).
+- [page.sql.gz](https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-page.sql.gz)
+- [pagelinks.sql.gz](https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pagelinks.sql.gz)
+
