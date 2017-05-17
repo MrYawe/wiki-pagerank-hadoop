@@ -21,7 +21,7 @@ public class LinksReducer extends Reducer<LongWritable, Text, Text, Text> {
             String val = value.toString();
 
             if(val.contains(":pn:")) {
-                pageName = val.replaceAll(":pagename:", "");
+                pageName = val.replaceAll(":pn:", "");
             } else {
                 if(!first) pagerank += ",";
                 pagerank += val;
