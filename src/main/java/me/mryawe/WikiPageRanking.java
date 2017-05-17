@@ -152,11 +152,11 @@ public class WikiPageRanking extends Configured implements Tool {
                 input = new Path(root.concat(String.valueOf(i)));
                 output = new Path(root.concat(String.valueOf(i + 1)));
                 i++;
-            } while (PageRankJob.run(input, output, true));
+            } while (PageRankJob.run(input, output, false));
         }
         input = new Path(root.concat(String.valueOf(i)));
         output = new Path(outputPath);
-        PageRankJob.run(input, output, true);
+        PageRankJob.run(input, output, false);
 
         return true;
     }

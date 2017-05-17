@@ -34,7 +34,7 @@ public class PageRankJob {
 	if (fs.exists(output))
 	    fs.delete(output, true);
 		
-	Job job = Job.getInstance(configuration);
+	Job job = Job.getInstance(configuration, "pageRankCalculator");
 	job.setJarByClass(WikiPageRanking.class);
 	job.setMapperClass(PageRankMapper.class);
 	job.setReducerClass(PageRankReducer.class);
