@@ -7,7 +7,7 @@
 - [pagelinks.sql.gz](https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pagelinks.sql.gz)
 2) Create the `input_pagelinks` and `input_pages` folders at the root of the project.
 3) Put `frwiki-latest-page.sql.gz` in `input_pages` and `frwiki-latest-pagelinks.sql.gz` in `input_pagelinks`.
-4) Run the progam with 3 args: "input_pagelinks input_pages final_output". The `final_output` folder will be created automatically and musn't exist at start.
+4) Run the progam with 3 args: "input_pagelinks input_pages final_output". The `final_result` folder will be created automatically and musn't exist at start.
 
 ### Old version
 This alpha version is based on this [blog article](http://blog.xebia.com/wiki-pagerank-with-hadoop/).
