@@ -12,34 +12,33 @@ public class JSONParser {
 
     public static void exportToJSONFile(String txtFile, String output)
     {
-        ArrayList<JSONObject> res = new ArrayList<JSONObject>();
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(output));
+        }
+        catch(IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
         try(BufferedReader br = new BufferedReader(new FileReader(txtFile))) {
             String line = br.readLine();
             while (line != null) {
                 String[] lineTabs = line.split("\t");
-                res.add(elemToJsonObject(lineTabs[1], Double.parseDouble(lineTabs[0])));
+                if(lineTabs.length == 2) {
+                    writer.write(elemToJsonObject(lineTabs[1], Double.parseDouble(lineTabs[0])).toJSONString());
+                    writer.newLine();
+                    writer.flush();
+                }
+                else
+                {
+                    System.out.println(lineTabs.toString());
+                }
                 line = br.readLine();
-            }
-        }
-        catch(Exception ex)
-        {
-            System.out.println("Error reading file");
-        }
-        //Save json array
-        BufferedWriter writer = null;
-        try {
-
-            writer = new BufferedWriter(new FileWriter(output));
-            for ( int i = 0; i < res.size(); i++)
-            {
-                writer.write(res.get(i).toJSONString());
-                writer.newLine();
-                writer.flush();
             }
             writer.close();
         }
-        catch(IOException ex) {
-            ex.printStackTrace();
+        catch(Exception ex) {
+            System.out.println("Error parsing to json" + ex.toString());
         }
     }
 
