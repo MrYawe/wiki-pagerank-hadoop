@@ -79,6 +79,8 @@ public class WikiPageRanking extends Configured implements Tool {
             if (!isCompleted) return 1;
         }
 
+        JSONParser.exportToJSONFile(args[2] + "/part-r-00000", args[2] + "/part-r-00000.json");
+
         return 0;
     }
 
