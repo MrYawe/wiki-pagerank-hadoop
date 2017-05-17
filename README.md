@@ -1,7 +1,12 @@
 # wiki-pagerank-hadoop
 
 ## Starting
-### First version
+### New version
+1) Create the `input_pagelinks` and `input_pages` folders at the root of the project.
+2) Put `frwiki-latest-page.sql.gz` in `input_pages` and `frwiki-latest-pagelinks.sql.gz` in `input_pagelinks`.
+3) Run the progam with 3 args: "input_pagelinks input_pages final_output". The `final_output` folder will be created automatically and musn't exist at start.
+
+### Old version
 This alpha version is based on this [blog article](http://blog.xebia.com/wiki-pagerank-with-hadoop/).
 - create an `input` folder under the project root with your xml file on it. You can download it here [here](https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2).
 - run the `WikiPageRanking` class with Intellij.
