@@ -113,45 +113,6 @@ public class WikiPageRanking extends Configured implements Tool {
         return sqlParser.waitForCompletion(true);
     }
 
-    public boolean runSqlPageLinksParsingTest(String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
-        Configuration conf = new Configuration();
-
-        Job sqlParser = Job.getInstance(conf, "sqlParserLinks");
-        sqlParser.setJarByClass(WikiPageRanking.class);
-
-        sqlParser.setOutputKeyClass(LongWritable.class);
-        sqlParser.setOutputValueClass(Text.class);
-
-        FileInputFormat.setInputPaths(sqlParser, new Path(inputPath));
-        FileOutputFormat.setOutputPath(sqlParser, new Path(outputPath));
-        sqlParser.setMapperClass(LinksMapper.class);
-        sqlParser.setNumReduceTasks(0);
-        //sqlParser.setReducerClass(LinksReducer.class);
-
-
-        return sqlParser.waitForCompletion(true);
-    }
-
-    /*
-    private boolean runRankCalculation(String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
-        Configuration conf = new Configuration();
-
-        Job rankCalculator = Job.getInstance(conf, "rankCalculator");
-        rankCalculator.setJarByClass(WikiPageRanking.class);
-
-        rankCalculator.setOutputKeyClass(Text.class);
-        rankCalculator.setOutputValueClass(Text.class);
-
-        FileInputFormat.setInputPaths(rankCalculator, new Path(inputPath));
-        FileOutputFormat.setOutputPath(rankCalculator, new Path(outputPath));
-
-        rankCalculator.setMapperClass(RankCalculateMapper.class);
-        rankCalculator.setReducerClass(RankCalculateReduce.class);
-
-        return rankCalculator.waitForCompletion(true);
-    }
-    */
-
     private boolean runRankOrdering(String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration conf = new Configuration();
 
@@ -181,7 +142,7 @@ public class WikiPageRanking extends Configured implements Tool {
                 input = new Path(root.concat(String.valueOf(i)));
                 output = new Path(root.concat(String.valueOf(i + 1)));
                 i++;
-            } while (PageRankJob.run(input, output, false));
+            } while (PageRankJob.run(input, output, false) || i<5);
         }
         input = new Path(root.concat(String.valueOf(i)));
         output = new Path(outputPath);
