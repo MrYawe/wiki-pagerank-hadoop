@@ -40,14 +40,13 @@ public class WikiPageRanking extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
-        //boolean isCompleted = runSqlPageLinksParsingTest("input_links", "output_links");
-        //if (!isCompleted) return 1;
-
         boolean isCompleted;
         File file;
-        String job1Output = "temp_output/sql_parsing";
-        String job2Output = "temp_output/pagerank_calculation";
+        String tempOutputFolder = "temp_output";
+        String job1Output = tempOutputFolder+"/sql_parsing";
+        String job2Output = tempOutputFolder+"/pagerank_calculation";
         String job3Output = args[2];
+        String jsonFile = args[2] + "/part-r-00000.json";
 
         file = new File(job1Output);
         if (!file.exists()) {
@@ -55,33 +54,45 @@ public class WikiPageRanking extends Configured implements Tool {
             if (!isCompleted) return 1;
         }
 
-        /*
-        String lastResultPath = null;
-        for (int runs = 0; runs < 5; runs++) {
-            String inPath = "ranking/iter" + nf.format(runs);
-            lastResultPath = "ranking/iter" + nf.format(runs + 1);
-
-            isCompleted = runRankCalculation(inPath, lastResultPath);
-
-            if (!isCompleted) return 1;
-        }
-        */
-
-        file = new File(job2Output);
-        if (!file.exists()) {
+        int maxFolder = getMaxFolder(tempOutputFolder);
+        if (maxFolder < 1) {
             isCompleted = runPageRank(job1Output, job2Output);
             if (!isCompleted) return 1;
         }
 
         file = new File(job3Output);
         if (!file.exists()) {
-            isCompleted = runRankOrdering(job2Output, job3Output);
+            maxFolder = getMaxFolder(tempOutputFolder);
+            isCompleted = runRankOrdering(tempOutputFolder+"/"+maxFolder, job3Output);
             if (!isCompleted) return 1;
         }
 
-        JSONParser.exportToJSONFile(args[2] + "/part-r-00000", args[2] + "/part-r-00000.json");
+        file = new File(jsonFile);
+        if (!file.exists()) {
+            JSONParser.exportToJSONFile(args[2] + "/part-r-00000", jsonFile);
+        }
 
         return 0;
+    }
+
+    public int getMaxFolder(String tempOutputFolder) {
+        int maxFolder = 0;
+        File directory = new File(tempOutputFolder);
+        File[] fList = directory.listFiles();
+        for (File f : fList) {
+            if (f.isDirectory()) {
+                try {
+                    int num = Integer.parseInt(f.getName());
+                    if(num > maxFolder) {
+                        maxFolder = num;
+                    }
+                } catch (Exception ex) {
+
+                }
+            }
+        }
+
+        return maxFolder;
     }
 
     public boolean runSqlPageLinksParsing(String pageSqlInputPath, String linksSqlInputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
